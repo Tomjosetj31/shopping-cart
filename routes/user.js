@@ -24,7 +24,7 @@ router.get('/signup', function(req, res, next) {
 
 router.post('/signup', function(req, res, next) {
     userHelper.doSignup(req.body).then((response) => {
-        console.log(response)
+        res.redirect('/login')
     })
 });
 
@@ -57,5 +57,11 @@ router.get('/logout', function(req, res, next) {
 router.get('/cart', verifyLogin, function(req, res, next){
     res.render('user/cart');
 });
+
+router.get('/add-to-cart/:id', verifyLogin, (req, res, next) => {
+  userHelper.addToCart(req.params.id, req.session.user._id).then((response)=>{
+      res.redirect('/');
+  })
+})
 
 module.exports = router;

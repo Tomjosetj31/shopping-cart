@@ -1,6 +1,7 @@
 var db = require('../config/connection')
 var collection = require('../config/collections')
 const bcrypt = require('bcrypt')
+const { ObjectId } = require('mongodb')
 
 module.exports={
     doSignup:(userData)=>{
@@ -32,5 +33,25 @@ module.exports={
                 resolve({status: false})
             }
         })
+    },
+    addToCart: (productId, userId)=> {
+        return new Promise(async(resolve, reject) => { 
+            let userCart = await db.get().collection(collection.CART_COLLECTION).findOne({user: ObjectId(userId)})
+            if (userCart) {
+                db.get().collection(collection.CART_COLLECTION).updateOne({user: ObjectId(userId)}, {
+                    $push: {products:ObjectId(productId)}
+                }).then((response)=>{
+                    resolve(response)
+                })
+            }else {
+                let cartObj = {
+                    user:ObjectId(userId),
+                    products:[ObjectId(productId)],
+                }
+                db.get().collection(collection.CART_COLLECTION).insertOne(cartObj).then((response)=>{
+                    resolve(response)
+                })
+            }
+         })
     }
 }

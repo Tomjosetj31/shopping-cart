@@ -24,6 +24,7 @@ router.get('/signup', function(req, res, next) {
 
 router.post('/signup', function(req, res, next) {
     userHelper.doSignup(req.body).then((response) => {
+        console.log(response)
     })
 });
 
